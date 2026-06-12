@@ -21,9 +21,13 @@
     --accent-color: #ff9800;
     --text-dark: #333333;
     --text-muted: #666666;
-    --bg-light: #f5f7fa;
+    --bg-light: #f0f4f7;
     --card-bg: #ffffff;
     --border-color: #e1e6eb;
+    --success-color: #2e7d32;
+    --success-light: #e8f5e9;
+    --danger-color: #c62828;
+    --danger-light: #ffebee;
   }
 
   * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
@@ -32,21 +36,21 @@
   header {
     background: linear-gradient(135deg, var(--primary-color), #016b82);
     color: white;
-    padding: 16px;
+    padding: 20px 16px;
     text-align: center;
     position: sticky;
     top: 0;
     z-index: 100;
-    box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+    box-shadow: 0 2px 12px rgba(0,0,0,0.15);
   }
-  header h1 { font-size: 1.2rem; font-weight: 600; }
-  
-  /* 强制唤起 PWA 安装的顶部横条 */
+  header h1 { font-size: 1.25rem; font-weight: 600; letter-spacing: 0.02em; }
+  header .sub { font-size: 0.72rem; opacity: 0.75; margin-top: 5px; }
+
   .pwa-install-banner {
     background-color: var(--accent-color);
     color: white;
-    padding: 10px 16px;
-    display: none; /* 动态显示 */
+    padding: 12px 16px;
+    display: none;
     justify-content: space-between;
     align-items: center;
     font-size: 0.9rem;
@@ -57,39 +61,203 @@
     background: white;
     color: var(--accent-color);
     border: none;
-    padding: 6px 14px;
+    padding: 7px 16px;
     border-radius: 6px;
     font-weight: bold;
     cursor: pointer;
-    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
   }
 
-  .container { max-width: 600px; margin: 0 auto; padding: 12px; }
-  .search-box { background: var(--card-bg); padding: 14px; border-radius: 12px; box-shadow: 0 4px 12px rgba(0,0,0,0.05); margin-bottom: 12px; }
-  .search-wrapper { position: relative; display: flex; align-items: center; }
-  .search-input { width: 100%; padding: 12px 16px; padding-right: 40px; border: 2px solid var(--border-color); border-radius: 8px; font-size: 1rem; outline: none; }
-  .search-input:focus { border-color: var(--primary-color); }
-  
-  .clear-btn { position: absolute; right: 12px; background: #ccc; color: white; border: none; width: 20px; height: 20px; border-radius: 50%; font-size: 0.8rem; cursor: pointer; display: none; align-items: center; justify-content: center; }
+  .container { max-width: 640px; margin: 0 auto; padding: 18px 14px; }
 
-  .status-bar { display: flex; justify-content: space-between; align-items: center; font-size: 0.85rem; color: var(--text-muted); padding: 2px 4px 10px 4px; }
-  .sync-btn { background: none; border: none; color: var(--primary-color); font-weight: bold; cursor: pointer; }
+  /* 搜索区 */
+  .search-box {
+    background: var(--card-bg);
+    padding: 20px 18px;
+    border-radius: 14px;
+    box-shadow: 0 4px 16px rgba(0,0,0,0.06);
+    margin-bottom: 16px;
+  }
+  .search-label {
+    font-size: 0.82rem;
+    color: var(--text-muted);
+    margin-bottom: 10px;
+    letter-spacing: 0.03em;
+  }
+  .search-wrapper {
+    display: flex;
+    gap: 10px;
+    align-items: center;
+  }
+  .search-input {
+    flex: 1;
+    padding: 13px 16px;
+    border: 2px solid var(--border-color);
+    border-radius: 10px;
+    font-size: 1rem;
+    outline: none;
+    transition: border-color 0.2s;
+    background: var(--bg-light);
+  }
+  .search-input:focus { border-color: var(--primary-color); background: white; }
+  .search-input:disabled { opacity: 0.5; cursor: not-allowed; }
 
-  /* 还原照片效果的精美卡片样式 */
-  .result-list { display: flex; flex-direction: column; gap: 10px; }
-  .item-card { background: var(--card-bg); border-radius: 12px; padding: 14px; box-shadow: 0 2px 8px rgba(0,0,0,0.04); border-left: 5px solid var(--primary-color); }
-  .item-header { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 6px; }
-  .item-title { font-size: 1.05rem; font-weight: bold; color: var(--text-dark); flex: 1; }
-  .item-stock-badge { background-color: var(--primary-light); color: var(--primary-color); padding: 4px 10px; border-radius: 20px; font-size: 0.9rem; font-weight: 700; }
-  .item-stock-badge.empty { background-color: #ffebee; color: #c62828; }
-  
-  .item-row { font-size: 0.85rem; color: var(--text-muted); margin-top: 4px; display: flex; }
-  .item-label { min-width: 75px; color: #999999; }
+  .search-btn {
+    padding: 13px 22px;
+    background: var(--primary-color);
+    color: white;
+    border: none;
+    border-radius: 10px;
+    font-size: 1rem;
+    font-weight: 600;
+    cursor: pointer;
+    white-space: nowrap;
+    transition: background 0.2s, transform 0.1s;
+    box-shadow: 0 3px 8px rgba(2, 138, 167, 0.3);
+  }
+  .search-btn:active { transform: scale(0.97); }
+  .search-btn:disabled { opacity: 0.5; cursor: not-allowed; }
+
+  .search-hint {
+    font-size: 0.78rem;
+    color: #aaa;
+    margin-top: 9px;
+    padding-left: 2px;
+  }
+
+  /* 状态栏 */
+  .status-bar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 0.83rem;
+    color: var(--text-muted);
+    padding: 0 4px 14px 4px;
+  }
+  .sync-btn {
+    background: none;
+    border: none;
+    color: var(--primary-color);
+    font-weight: bold;
+    cursor: pointer;
+    font-size: 0.83rem;
+  }
+
+  /* 空态提示 */
+  .welcome-box {
+    text-align: center;
+    padding: 52px 20px;
+    color: var(--text-muted);
+    background: var(--card-bg);
+    border-radius: 14px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+  }
+  .welcome-icon { font-size: 2.8rem; margin-bottom: 14px; }
+  .welcome-title { font-size: 1rem; color: #555; font-weight: 600; margin-bottom: 6px; }
+  .welcome-sub { font-size: 0.83rem; color: #aaa; }
+
+  /* 卡片列表 */
+  .result-list { display: flex; flex-direction: column; gap: 12px; }
+
+  .item-card {
+    background: var(--card-bg);
+    border-radius: 14px;
+    padding: 18px 16px;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+    border-left: 5px solid var(--primary-color);
+    transition: box-shadow 0.2s;
+  }
+  .item-card:active { box-shadow: 0 4px 16px rgba(0,0,0,0.1); }
+
+  .item-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-bottom: 10px;
+    gap: 10px;
+  }
+  .item-title {
+    font-size: 1.08rem;
+    font-weight: 700;
+    color: var(--text-dark);
+    flex: 1;
+    line-height: 1.4;
+  }
+
+  .badges {
+    display: flex;
+    gap: 6px;
+    flex-shrink: 0;
+    align-items: center;
+  }
+
+  .badge-stock {
+    padding: 5px 12px;
+    border-radius: 20px;
+    font-size: 0.88rem;
+    font-weight: 700;
+    letter-spacing: 0.04em;
+  }
+  .badge-stock.has { background-color: var(--success-light); color: var(--success-color); }
+  .badge-stock.empty { background-color: var(--danger-light); color: var(--danger-color); }
+
+  .brand-tag {
+    display: inline-block;
+    font-size: 0.78rem;
+    padding: 3px 9px;
+    border-radius: 5px;
+    background-color: #fff3e0;
+    color: #e65100;
+    margin-bottom: 10px;
+    font-weight: 500;
+  }
+
+  .item-divider {
+    border: none;
+    border-top: 1px solid var(--border-color);
+    margin: 10px 0;
+  }
+
+  .item-row {
+    font-size: 0.86rem;
+    color: var(--text-muted);
+    margin-top: 7px;
+    display: flex;
+    align-items: baseline;
+    line-height: 1.5;
+  }
+  .item-label {
+    min-width: 72px;
+    color: #b0b8c1;
+    font-size: 0.82rem;
+    flex-shrink: 0;
+  }
   .item-value { color: #444444; flex: 1; }
-  .tag { display: inline-block; font-size: 0.75rem; padding: 1px 6px; border-radius: 4px; margin-top: 4px; background-color: #fff3e0; color: #e65100; }
+  .item-value.highlight {
+    color: var(--primary-color);
+    font-weight: 700;
+  }
+  .item-value.price {
+    color: #b5450b;
+    font-weight: 700;
+    font-size: 0.95rem;
+  }
 
-  .loading-box, .empty-box { text-align: center; padding: 40px 20px; color: var(--text-muted); background: var(--card-bg); border-radius: 12px; }
-  .spinner { width: 30px; height: 30px; border: 3px solid var(--border-color); border-top-color: var(--primary-color); border-radius: 50%; margin: 0 auto 12px auto; animation: spin 1s linear infinite; }
+  .loading-box, .empty-box {
+    text-align: center;
+    padding: 48px 20px;
+    color: var(--text-muted);
+    background: var(--card-bg);
+    border-radius: 14px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+  }
+  .spinner {
+    width: 32px; height: 32px;
+    border: 3px solid var(--border-color);
+    border-top-color: var(--primary-color);
+    border-radius: 50%;
+    margin: 0 auto 14px auto;
+    animation: spin 1s linear infinite;
+  }
   @keyframes spin { to { transform: rotate(360deg); } }
 </style>
 </head>
@@ -102,48 +270,59 @@
 
 <header>
   <h1>大连市友谊医院 - 院内药品信息数智通</h1>
-  <div style="font-size: 0.7rem; opacity: 0.8; margin-top:4px;">适配 GitHub / 医院内网双环境实时系统</div>
+  <div class="sub">适配 GitHub / 医院内网双环境实时系统</div>
 </header>
 
 <div class="container">
   <div class="search-box">
+    <div class="search-label">药品检索（支持名称 / 商品名查询）</div>
     <div class="search-wrapper">
-      <input type="text" id="searchInput" class="search-input" placeholder="正在秒级同步药库数据..." disabled>
-      <button id="clearBtn" class="clear-btn">&times;</button>
+      <input type="text" id="searchInput" class="search-input"
+             placeholder="请输入药品名称或商品名..."
+             disabled
+             autocomplete="off"
+             inputmode="search">
+      <button id="searchBtn" class="search-btn" onclick="doSearch()" disabled>查询</button>
     </div>
+    <div class="search-hint" id="searchHint">正在同步药库数据，请稍候…</div>
   </div>
 
   <div class="status-bar">
-    <span id="totalCount">正在读取 stock.xlsx...</span>
+    <span id="totalCount"></span>
     <button class="sync-btn" onclick="loadExcelData()">🔄 刷新数据</button>
   </div>
 
   <div id="resultList" class="result-list">
-    <div class="loading-box"><div class="spinner"></div><p>正在拉取最新药品库存报表流...</p></div>
+    <div class="loading-box"><div class="spinner"></div><p>正在拉取最新药品库存报表…</p></div>
   </div>
 </div>
 
 <script>
   const EXCEL_FILE_NAME = 'stock.xlsx';
-  let inventoryData = []; 
-  let deferredPrompt = null; // 存储PWA安装事件
+  let inventoryData = [];
+  let deferredPrompt = null;
+  let dataReady = false;
 
   // 1. 数据异步同步与清洗
   async function loadExcelData() {
     const listContainer = document.getElementById('resultList');
-    listContainer.innerHTML = `<div class="loading-box"><div class="spinner"></div><p>正在建立数据通道...</p></div>`;
-    const timeStamp = new Date().getTime();
+    listContainer.innerHTML = `<div class="loading-box"><div class="spinner"></div><p>正在建立数据通道…</p></div>`;
+    dataReady = false;
+    document.getElementById('searchInput').disabled = true;
+    document.getElementById('searchBtn').disabled = true;
+    document.getElementById('searchHint').textContent = '正在同步药库数据，请稍候…';
+    document.getElementById('totalCount').textContent = '';
 
     try {
-      const response = await fetch(`./${EXCEL_FILE_NAME}?t=${timeStamp}`);
-      if (!response.ok) throw new Error("未检测到 stock.xlsx 文件，请确认其与网页位于同一目录下。");
-      
+      const response = await fetch(`./${EXCEL_FILE_NAME}?t=${Date.now()}`);
+      if (!response.ok) throw new Error('文件未找到');
+
       const arrayBuffer = await response.arrayBuffer();
       const data = new Uint8Array(arrayBuffer);
       const workbook = XLSX.read(data, { type: 'array' });
       const worksheet = workbook.Sheets[workbook.SheetNames[0]];
       const rawJson = XLSX.utils.sheet_to_json(worksheet, { header: 1 });
-      
+
       let headerIndex = 0;
       for (let i = 0; i < rawJson.length; i++) {
         if (rawJson[i] && (rawJson[i].includes('名称') || rawJson[i].includes('编码'))) {
@@ -155,120 +334,169 @@
       const headers = rawJson[headerIndex];
       inventoryData = [];
 
+      const idxRoom     = headers.indexOf('库房');
+      const idxLocation = headers.indexOf('库房货位');
+      const idxName     = headers.indexOf('名称');
+      const idxBrand    = headers.indexOf('商品名');
+      const idxSpec     = headers.indexOf('规格');
+      const idxFactory  = headers.indexOf('产地');
+      const idxPrice    = headers.indexOf('价格');
+      const idxQty      = headers.indexOf('数量');
+
       for (let j = headerIndex + 1; j < rawJson.length; j++) {
         const row = rawJson[j];
-        if (!row || row.length === 0 || !row[headers.indexOf('名称')]) continue;
-
+        if (!row || row.length === 0 || !row[idxName]) continue;
         inventoryData.push({
-          room: row[headers.indexOf('库房')] || '',
-          location: row[headers.indexOf('库房货位')] || '',
-          name: row[headers.indexOf('名称')] || '',
-          brandName: row[headers.indexOf('商品名')] || '',
-          spec: row[headers.indexOf('规格')] || '',
-          factory: row[headers.indexOf('产地')] || '',
-          quantity: parseInt(row[headers.indexOf('数量')]) || 0
+          room:      row[idxRoom]     || '',
+          name:      row[idxName]     || '',
+          brandName: row[idxBrand]    || '',
+          spec:      row[idxSpec]     || '',
+          factory:   row[idxFactory]  || '',
+          price:     row[idxPrice]    != null ? row[idxPrice] : null,
+          quantity:  parseInt(row[idxQty]) || 0
         });
       }
 
-      document.getElementById('totalCount').innerText = `已成功实时同步 ${inventoryData.length} 条药品库存`;
+      dataReady = true;
       document.getElementById('searchInput').disabled = false;
-      document.getElementById('searchInput').placeholder = "🔍 模糊检索：名称、商品名、厂家、库房";
-      renderList(inventoryData);
+      document.getElementById('searchBtn').disabled = false;
+      document.getElementById('searchHint').textContent = `已同步 ${inventoryData.length} 条药品记录，输入关键词后点击查询`;
+      document.getElementById('totalCount').textContent = `共 ${inventoryData.length} 条药品记录`;
+
+      // 数据就绪后显示默认欢迎态
+      listContainer.innerHTML = `
+        <div class="welcome-box">
+          <div class="welcome-icon">💊</div>
+          <div class="welcome-title">数据已就绪</div>
+          <div class="welcome-sub">请在上方输入药品名称或商品名进行查询</div>
+        </div>`;
+
+      // 支持回车触发查询
+      document.getElementById('searchInput').addEventListener('keydown', (e) => {
+        if (e.key === 'Enter') doSearch();
+      });
 
     } catch (error) {
       listContainer.innerHTML = `
-        <div class="empty-box" style="color: #c62828;">
+        <div class="empty-box" style="color: var(--danger-color);">
           <p>❌ 数据读取错误</p>
-          <p style="font-size:0.8rem; margin-top:8px; color:#555;">请检查 <b>${EXCEL_FILE_NAME}</b> 是否已被移除、改名，或处于损坏锁定状态。</p>
-        </div>
-      `;
+          <p style="font-size:0.82rem; margin-top:10px; color:#555;">
+            请确认 <b>${EXCEL_FILE_NAME}</b> 与本页面位于同一目录，且文件未被损坏或锁定。
+          </p>
+        </div>`;
+      document.getElementById('searchHint').textContent = '数据加载失败，请点击右侧"刷新数据"重试';
     }
   }
 
-  // 2. 高还原度卡片视图渲染
+  // 2. 执行查询
+  function doSearch() {
+    if (!dataReady) return;
+    const val = document.getElementById('searchInput').value.trim().toLowerCase();
+    if (!val) {
+      document.getElementById('resultList').innerHTML = `
+        <div class="welcome-box">
+          <div class="welcome-icon">🔍</div>
+          <div class="welcome-title">请输入查询关键词</div>
+          <div class="welcome-sub">支持药品名称 / 商品名模糊检索</div>
+        </div>`;
+      document.getElementById('totalCount').textContent = `共 ${inventoryData.length} 条药品记录`;
+      return;
+    }
+    const res = inventoryData.filter(i =>
+      i.name.toLowerCase().includes(val) ||
+      i.brandName.toLowerCase().includes(val)
+    );
+    document.getElementById('totalCount').textContent = `查询到 ${res.length} 条匹配记录`;
+    renderList(res);
+  }
+
+  // 3. 高还原度卡片视图渲染
   function renderList(data) {
     const listContainer = document.getElementById('resultList');
     if (data.length === 0) {
-      listContainer.innerHTML = `<div class="empty-box">📭 未查询到匹配的药品库存</div>`;
+      listContainer.innerHTML = `
+        <div class="empty-box">
+          <div style="font-size:2.2rem;margin-bottom:12px;">📭</div>
+          <div style="font-weight:600;color:#555;margin-bottom:6px;">未查询到匹配药品</div>
+          <div style="font-size:0.82rem;color:#aaa;">请尝试其他名称或商品名</div>
+        </div>`;
       return;
     }
 
-    listContainer.innerHTML = data.map(item => `
-      <div class="item-card">
-        <div class="item-header">
-          <div class="item-title">${item.name}</div>
-          <div class="item-stock-badge ${item.quantity <= 0 ? 'empty' : ''}">数量: ${item.quantity}</div>
-        </div>
-        ${item.brandName ? `<div><span class="tag">商品名: ${item.brandName}</span></div>` : ''}
-        <div class="item-row"><span class="item-label">规格：</span><span class="item-value">${item.spec || '-'}</span></div>
-        <div class="item-row"><span class="item-label">厂家/产地：</span><span class="item-value">${item.factory || '-'}</span></div>
-        <div class="item-row"><span class="item-label">库房货位：</span><span class="item-value" style="color: var(--primary-color); font-weight:bold;">${item.room} ${item.location ? `(${item.location})` : ''}</span></div>
-      </div>
-    `).join('');
+    listContainer.innerHTML = data.map(item => {
+      const hasStock = item.quantity > 0;
+      const stockLabel = hasStock ? '有' : '无';
+      const stockClass = hasStock ? 'has' : 'empty';
+      const priceText  = (item.price != null && item.price !== '') ? `¥ ${Number(item.price).toFixed(2)}` : '-';
+
+      return `
+        <div class="item-card">
+          <div class="item-header">
+            <div class="item-title">${item.name}</div>
+            <div class="badges">
+              <div class="badge-stock ${stockClass}">${stockLabel}</div>
+            </div>
+          </div>
+          ${item.brandName ? `<div><span class="brand-tag">商品名：${item.brandName}</span></div>` : ''}
+          <hr class="item-divider">
+          <div class="item-row">
+            <span class="item-label">规　格：</span>
+            <span class="item-value">${item.spec || '-'}</span>
+          </div>
+          <div class="item-row">
+            <span class="item-label">厂家产地：</span>
+            <span class="item-value">${item.factory || '-'}</span>
+          </div>
+          <div class="item-row">
+            <span class="item-label">参考价格：</span>
+            <span class="item-value price">${priceText}</span>
+          </div>
+          <div class="item-row">
+            <span class="item-label">所在库房：</span>
+            <span class="item-value highlight">${item.room || '-'}</span>
+          </div>
+        </div>`;
+    }).join('');
   }
 
-  // 3. 多字段极速模糊搜索
-  const searchInput = document.getElementById('searchInput');
-  const clearBtn = document.getElementById('clearBtn');
-
-  searchInput.addEventListener('input', (e) => {
-    const val = e.target.value.trim().toLowerCase();
-    clearBtn.style.display = val !== '' ? 'flex' : 'none';
-    const res = inventoryData.filter(i => 
-      i.name.toLowerCase().includes(val) || i.brandName.toLowerCase().includes(val) || i.factory.toLowerCase().includes(val) || i.room.toLowerCase().includes(val)
-    );
-    document.getElementById('totalCount').innerText = `已筛选出 ${res.length} 条记录`;
-    renderList(res);
-  });
-
-  clearBtn.addEventListener('click', () => { searchInput.value = ''; clearBtn.style.display = 'none'; renderList(inventoryData); });
-
-  // 4. 【核心技术】全平台 PWA 强制触发交互架构
+  // 4. PWA 安装逻辑
   function setupPWA() {
-    // 动态清单注入
     const manifest = {
       "short_name": "友谊药信通",
       "name": "大连市友谊医院院内药品信息数智通",
       "icons": [{ "src": "https://cdn-icons-png.flaticon.com/512/3022/3022226.png", "type": "image/png", "sizes": "512x512" }],
       "start_url": "./index.html",
-      "background_color": "#f5f7fa",
+      "background_color": "#f0f4f7",
       "theme-color": "#028aa7",
       "display": "standalone"
     };
-    const blob = new Blob([JSON.stringify(manifest)], {type: 'application/json'});
+    const blob = new Blob([JSON.stringify(manifest)], { type: 'application/json' });
     document.head.insertAdjacentHTML('beforeend', `<link rel="manifest" href="${URL.createObjectURL(blob)}">`);
 
-    // 监听浏览器的可安装事件
     window.addEventListener('beforeinstallprompt', (e) => {
-      e.preventDefault(); // 阻止部分浏览器的静默行为
-      deferredPrompt = e;  // 留存凭证
-      
-      // 显示我们自己设计的“添加到桌面”强交互条
+      e.preventDefault();
+      deferredPrompt = e;
       document.getElementById('pwaBanner').style.display = 'flex';
     });
 
-    // 用户点击我们设计的“添加到桌面”按钮
     document.getElementById('pwaBtn').addEventListener('click', async () => {
       if (deferredPrompt) {
-        deferredPrompt.prompt(); // 强制唤醒系统的安装小弹窗
+        deferredPrompt.prompt();
         const { outcome } = await deferredPrompt.userChoice;
-        if (outcome === 'accepted') {
-          document.getElementById('pwaBanner').style.display = 'none';
-        }
+        if (outcome === 'accepted') document.getElementById('pwaBanner').style.display = 'none';
         deferredPrompt = null;
       }
     });
 
-    // 注册底层离线沙盒 SW 引擎
     if ('serviceWorker' in navigator) {
       const swCode = `
-        self.addEventListener('install', e => { e.waitUntil(caches.open('yy-v3').then(c => c.addAll(['./', './index.html']))); });
+        self.addEventListener('install', e => { e.waitUntil(caches.open('yy-v4').then(c => c.addAll(['./', './index.html']))); });
         self.addEventListener('fetch', e => {
           if (e.request.url.includes('.xlsx')) { e.respondWith(fetch(e.request)); }
           else { e.respondWith(caches.match(e.request).then(r => r || fetch(e.request))); }
         });
       `;
-      navigator.serviceWorker.register(URL.createObjectURL(new Blob([swCode], {type: 'application/javascript'}))).catch(()=>{});
+      navigator.serviceWorker.register(URL.createObjectURL(new Blob([swCode], { type: 'application/javascript' }))).catch(() => {});
     }
   }
 

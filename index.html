@@ -19,8 +19,8 @@
     --primary-color: #028aa7;
     --primary-light: #e6f4f7;
     --accent-color: #ff9800;
-    --text-dark: #222222; /* 稍微加深文字颜色，提高对比度 */
-    --text-muted: #555555; /* 提高次要文字的可见度 */
+    --text-dark: #222222; 
+    --text-muted: #555555; 
     --bg-light: #f0f4f7;
     --card-bg: #ffffff;
     --border-color: #e1e6eb;
@@ -78,7 +78,7 @@
     margin-bottom: 16px;
   }
   .search-label {
-    font-size: 0.95rem; /* 稍微放大提示 */
+    font-size: 0.95rem; 
     color: var(--text-dark);
     margin-bottom: 10px;
     font-weight: bold;
@@ -93,7 +93,7 @@
     padding: 13px 16px;
     border: 2px solid var(--border-color);
     border-radius: 10px;
-    font-size: 1.1rem; /* 放大输入框字体 */
+    font-size: 1.1rem; 
     outline: none;
     transition: border-color 0.2s;
     background: var(--bg-light);
@@ -107,7 +107,7 @@
     color: white;
     border: none;
     border-radius: 10px;
-    font-size: 1.1rem; /* 放大按钮字体 */
+    font-size: 1.1rem; 
     font-weight: 600;
     cursor: pointer;
     white-space: nowrap;
@@ -129,7 +129,7 @@
     display: flex;
     justify-content: space-between;
     align-items: center;
-    font-size: 1.05rem; /* 放大结果提示字体 */
+    font-size: 1.05rem; 
     font-weight: bold;
     color: var(--primary-color);
     padding: 0 4px 14px 4px;
@@ -141,10 +141,10 @@
     color: var(--primary-color);
     font-weight: bold;
     cursor: pointer;
-    font-size: 0.95rem; /* 放大刷新按钮 */
+    font-size: 0.95rem; 
     padding: 6px 14px;
     border-radius: 6px;
-    margin-left: auto; /* 确保无总数文本时靠右对齐 */
+    margin-left: auto; 
   }
 
   /* 空态提示 */
@@ -176,45 +176,49 @@
   .item-header {
     display: flex;
     justify-content: space-between;
-    align-items: flex-start;
+    align-items: center;
     margin-bottom: 12px;
     gap: 10px;
   }
   .item-title {
-    font-size: 1.35rem; /* 大幅放大药品名称 */
+    font-size: 1.35rem; 
     font-weight: 800;
     color: #000000;
     flex: 1;
     line-height: 1.4;
   }
 
-  .badges {
+  /* 商品名与库存状态同行包裹器 */
+  .brand-status-row {
     display: flex;
-    gap: 6px;
-    flex-shrink: 0;
+    justify-content: space-between;
     align-items: center;
+    margin-bottom: 12px;
+    gap: 10px;
   }
-
-  .badge-stock {
-    padding: 6px 16px; /* 增大标签尺寸 */
-    border-radius: 20px;
-    font-size: 1.05rem; /* 放大库存文字 */
-    font-weight: bold;
-    letter-spacing: 0.04em;
-  }
-  .badge-stock.has { background-color: var(--success-color); color: white; } /* 提高对比度：绿底白字 */
-  .badge-stock.empty { background-color: var(--danger-color); color: white; } /* 提高对比度：红底白字 */
 
   .brand-tag {
     display: inline-block;
-    font-size: 1.0rem; /* 放大商品名 */
+    font-size: 1.0rem; 
     padding: 4px 10px;
     border-radius: 5px;
     background-color: #fff3e0;
     color: #d84315;
-    margin-bottom: 12px;
     font-weight: bold;
+    margin-bottom: 0; /* 清除原有下边距 */
   }
+
+  .badge-stock {
+    padding: 4px 14px; 
+    border-radius: 6px;
+    font-size: 1.1rem; /* 适老放大 */
+    font-weight: bold;
+    letter-spacing: 0.04em;
+    white-space: nowrap;
+    margin-left: auto; /* 如果没有商品名，自动靠最右侧显示 */
+  }
+  .badge-stock.has { background-color: var(--success-color); color: white; } 
+  .badge-stock.empty { background-color: var(--danger-color); color: white; } 
 
   .item-divider {
     border: none;
@@ -223,16 +227,16 @@
   }
 
   .item-row {
-    font-size: 1.15rem; /* 全面放大信息文本 */
+    font-size: 1.15rem; 
     color: var(--text-dark);
     margin-top: 10px;
     display: flex;
     align-items: baseline;
-    line-height: 1.6; /* 加大行间距，防止文字挤在一起 */
+    line-height: 1.6; 
   }
   .item-label {
-    min-width: 95px; /* 适当放宽标签宽度防止重叠 */
-    color: #666666; /* 加深标签颜色以利于辨认 */
+    min-width: 95px; 
+    color: #666666; 
     font-size: 1.1rem;
     flex-shrink: 0;
   }
@@ -240,12 +244,12 @@
   .item-value.highlight {
     color: var(--primary-color);
     font-weight: bold;
-    font-size: 1.25rem; /* 特别放大库房名称 */
+    font-size: 1.25rem; 
   }
   .item-value.price {
     color: #d32f2f;
     font-weight: bold;
-    font-size: 1.3rem; /* 放大价格显示 */
+    font-size: 1.3rem; 
   }
 
   .loading-box, .empty-box {
@@ -317,7 +321,7 @@
     document.getElementById('searchInput').disabled = true;
     document.getElementById('searchBtn').disabled = true;
     document.getElementById('searchHint').textContent = '正在同步药库数据，请稍候…';
-    document.getElementById('totalCount').textContent = ''; // 隐藏处1：清空初始化总数提示
+    document.getElementById('totalCount').textContent = ''; 
 
     try {
       const response = await fetch(`./${EXCEL_FILE_NAME}?t=${Date.now()}`);
@@ -367,149 +371,11 @@
       document.getElementById('searchInput').disabled = false;
       document.getElementById('searchBtn').disabled = false;
       
-      // 隐藏处2：将带有总数的提示改为纯功能引导
       document.getElementById('searchHint').textContent = `数据已同步成功，输入关键词后点击查询`;
       document.getElementById('totalCount').textContent = ``; 
 
-      // 数据就绪后显示默认欢迎态
       listContainer.innerHTML = `
         <div class="welcome-box">
           <div class="welcome-icon">💊</div>
           <div class="welcome-title">数据已就绪</div>
-          <div class="welcome-sub">请在上方输入药品名称或商品名进行查询</div>
-        </div>`;
-
-      // 支持回车触发查询
-      document.getElementById('searchInput').addEventListener('keydown', (e) => {
-        if (e.key === 'Enter') doSearch();
-      });
-
-    } catch (error) {
-      listContainer.innerHTML = `
-        <div class="empty-box" style="color: var(--danger-color);">
-          <p style="font-size:1.2rem; font-weight:bold;">❌ 数据读取错误</p>
-          <p style="font-size:1.0rem; margin-top:10px; color:#333;">
-            请确认 <b>${EXCEL_FILE_NAME}</b> 与本页面位于同一目录，且文件未被损坏或锁定。
-          </p>
-        </div>`;
-      document.getElementById('searchHint').textContent = '数据加载失败，请点击右侧"刷新数据"重试';
-    }
-  }
-
-  // 2. 执行查询
-  function doSearch() {
-    if (!dataReady) return;
-    const val = document.getElementById('searchInput').value.trim().toLowerCase();
-    if (!val) {
-      document.getElementById('resultList').innerHTML = `
-        <div class="welcome-box">
-          <div class="welcome-icon">🔍</div>
-          <div class="welcome-title">请输入查询关键词</div>
-          <div class="welcome-sub">支持药品名称 / 商品名模糊检索</div>
-        </div>`;
-      document.getElementById('totalCount').textContent = ``; // 空白时不显示条数
-      return;
-    }
-    const res = inventoryData.filter(i =>
-      i.name.toLowerCase().includes(val) ||
-      i.brandName.toLowerCase().includes(val)
-    );
-    // 【保留】查询结果匹配数量提示，并做高亮处理
-    document.getElementById('totalCount').textContent = `查询到 ${res.length} 条匹配记录`;
-    renderList(res);
-  }
-
-  // 3. 高还原度卡片视图渲染
-  function renderList(data) {
-    const listContainer = document.getElementById('resultList');
-    if (data.length === 0) {
-      listContainer.innerHTML = `
-        <div class="empty-box">
-          <div style="font-size:3rem;margin-bottom:12px;">📭</div>
-          <div style="font-weight:bold;color:#222;font-size:1.2rem;margin-bottom:6px;">未查询到匹配药品</div>
-          <div style="font-size:1.0rem;color:#666;">请尝试其他名称或商品名</div>
-        </div>`;
-      return;
-    }
-
-    listContainer.innerHTML = data.map(item => {
-      const hasStock = item.quantity > 0;
-      const stockLabel = hasStock ? '有库房存货' : '暂无存货';
-      const stockClass = hasStock ? 'has' : 'empty';
-      const priceText  = (item.price != null && item.price !== '') ? `¥ ${Number(item.price).toFixed(2)}` : '-';
-
-      return `
-        <div class="item-card">
-          <div class="item-header">
-            <div class="item-title">${item.name}</div>
-          </div>
-          <div style="margin-bottom: 8px;">
-            <span class="badge-stock ${stockClass}">${stockLabel}</span>
-          </div>
-          ${item.brandName ? `<div><span class="brand-tag">商品名：${item.brandName}</span></div>` : ''}
-          <hr class="item-divider">
-          <div class="item-row">
-            <span class="item-label">规  格：</span>
-            <span class="item-value">${item.spec || '-'}</span>
-          </div>
-          <div class="item-row">
-            <span class="item-label">厂家产地：</span>
-            <span class="item-value">${item.factory || '-'}</span>
-          </div>
-          <div class="item-row">
-            <span class="item-label">参考价格：</span>
-            <span class="item-value price">${priceText}</span>
-          </div>
-          <div class="item-row">
-            <span class="item-label">所在库房：</span>
-            <span class="item-value highlight">${item.room || '-'}</span>
-          </div>
-        </div>`;
-    }).join('');
-  }
-
-  // 4. PWA 安装逻辑
-  function setupPWA() {
-    const manifest = {
-      "short_name": "友谊药信通",
-      "name": "大连市友谊医院院内药品信息数智通",
-      "icons": [{ "src": "https://cdn-icons-png.flaticon.com/512/3022/3022226.png", "type": "image/png", "sizes": "512x512" }],
-      "start_url": "./index.html",
-      "background_color": "#f0f4f7",
-      "theme-color": "#028aa7",
-      "display": "standalone"
-    };
-    const blob = new Blob([JSON.stringify(manifest)], { type: 'application/json' });
-    document.head.insertAdjacentHTML('beforeend', `<link rel="manifest" href="${URL.createObjectURL(blob)}">`);
-
-    window.addEventListener('beforeinstallprompt', (e) => {
-      e.preventDefault();
-      deferredPrompt = e;
-      document.getElementById('pwaBanner').style.display = 'flex';
-    });
-
-    document.getElementById('pwaBtn').addEventListener('click', async () => {
-      if (deferredPrompt) {
-        deferredPrompt.prompt();
-        const { outcome } = await deferredPrompt.userChoice;
-        if (outcome === 'accepted') document.getElementById('pwaBanner').style.display = 'none';
-        deferredPrompt = null;
-      }
-    });
-
-    if ('serviceWorker' in navigator) {
-      const swCode = `
-        self.addEventListener('install', e => { e.waitUntil(caches.open('yy-v4').then(c => c.addAll(['./', './index.html']))); });
-        self.addEventListener('fetch', e => {
-          if (e.request.url.includes('.xlsx')) { e.respondWith(fetch(e.request)); }
-          else { e.respondWith(caches.match(e.request).then(r => r || fetch(e.request))); }
-        });
-      `;
-      navigator.serviceWorker.register(URL.createObjectURL(new Blob([swCode], { type: 'application/javascript' }))).catch(() => {});
-    }
-  }
-
-  window.addEventListener('DOMContentLoaded', () => { setupPWA(); loadExcelData(); });
-</script>
-</body>
-</html>
+          <div class="welcome-sub">

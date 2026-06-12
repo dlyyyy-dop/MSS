@@ -195,6 +195,7 @@
     align-items: center;
     margin-bottom: 12px;
     gap: 10px;
+    min-height: 32px;
   }
 
   .brand-tag {
@@ -205,17 +206,17 @@
     background-color: #fff3e0;
     color: #d84315;
     font-weight: bold;
-    margin-bottom: 0; /* 清除原有下边距 */
+    margin-bottom: 0; 
   }
 
   .badge-stock {
     padding: 4px 14px; 
     border-radius: 6px;
-    font-size: 1.1rem; /* 适老放大 */
+    font-size: 1.1rem; 
     font-weight: bold;
     letter-spacing: 0.04em;
     white-space: nowrap;
-    margin-left: auto; /* 如果没有商品名，自动靠最右侧显示 */
+    margin-left: auto; 
   }
   .badge-stock.has { background-color: var(--success-color); color: white; } 
   .badge-stock.empty { background-color: var(--danger-color); color: white; } 
@@ -378,4 +379,161 @@
         <div class="welcome-box">
           <div class="welcome-icon">💊</div>
           <div class="welcome-title">数据已就绪</div>
-          <div class="welcome-sub">
+          <div class="welcome-sub">请在上方输入药品名称或商品名进行查询</div>
+        </div>`;
+
+      // 清除历史监听，防止重复绑定
+      const oldInput = document.getElementById('searchInput');
+      const newInput = oldInput.cloneNode(true);
+      oldInput.parentNode.replaceChild(newInput, oldInput);
+      
+      newInput.disabled = false;
+      newInput.addEventListener('keydown', (e) => {
+        if (e.key === 'Enter') doSearch();
+      });
+
+    } catch (error) {
+      console.error(error);
+      listContainer.innerHTML = `
+        <div class="empty-box" style="color: var(--danger-color);">
+          <p style="font-size:1.2rem; font-weight:bold;">❌ 数据读取错误</p>
+          <p style="font-size:1.0rem; margin-top:10px; color:#333;">
+            请确认 <b>${EXCEL_FILE_NAME}</b> 与本页面位于同一目录，且文件未被损坏或锁定。
+          </p>
+        </div>`;
+      document.getElementById('searchHint').textContent = '数据加载失败，请点击右侧"刷新数据"重试';
+    }
+  }
+
+  // 2. 执行查询
+  function doSearch() {
+    if (!dataReady) return;
+    const val = document.getElementById('searchInput').value.trim().toLowerCase();
+    if (!val) {
+      document.getElementById('resultList').innerHTML = `
+        <div class="welcome-box">
+          <div class="welcome-icon">🔍</div>
+          <div class="welcome-title">请输入查询关键词</div>
+          <div class="welcome-sub">支持药品名称 / 商品名模糊检索</div>
+        </div>`;
+      document.getElementById('totalCount').textContent = ``; 
+      return;
+    }
+    const res = inventoryData.filter(i =>
+      i.name.toLowerCase().includes(val) ||
+      i.brandName.toLowerCase().includes(val)
+    );
+    document.getElementById('totalCount').textContent = `查询到 ${res.length} 条匹配记录`;
+    renderList(res);
+  }
+
+  // 3. 高还原度卡片视图渲染
+  function renderList(data) {
+    const listContainer = document.getElementById('resultList');
+    if (!data || data.length === 0) {
+      listContainer.innerHTML = `
+        <div class="empty-box">
+          <div style="font-size:3rem;margin-bottom:12px;">📭</div>
+          <div style="font-weight:bold;color:#222;font-size:1.2rem;margin-bottom:6px;">未查询到匹配药品</div>
+          <div style="font-size:1.0rem;color:#666;">请尝试其他名称或商品名</div>
+        </div>`;
+      return;
+    }
+
+    listContainer.innerHTML = data.map(item => {
+      const hasStock = item.quantity > 0;
+      const stockLabel = hasStock ? '有' : '无';
+      const stockClass = hasStock ? 'has' : 'empty';
+      const priceText  = (item.price != null && item.price !== '') ? `¥ ${Number(item.price).toFixed(2)}` : '-';
+
+      return `
+        <div class="item-card">
+          <div class="item-header">
+            <div class="item-title">${item.name || '-'}</div>
+          </div>
+          
+          <div class="brand-status-row">
+            ${item.brandName ? `<div><span class="brand-tag">商品名：${item.brandName}</span></div>` : '<div></div>'}
+            <div class="badge-stock ${stockClass}">${stockLabel}</div>
+          </div>
+
+          <hr class="item-divider">
+          <div class="item-row">
+            <span class="item-label">规  格：</span>
+            <span class="item-value">${item.spec || '-'}</span>
+          </div>
+          <div class="item-row">
+            <span class="item-label">厂家产地：</span>
+            <span class="item-value">${item.factory || '-'}</span>
+          </div>
+          <div class="item-row">
+            <span class="item-label">参考价格：</span>
+            <span class="item-value price">${priceText}</span>
+          </div>
+          <div class="item-row">
+            <span class="item-label">所在库房：</span>
+            <span class="item-value highlight">${item.room || '-'}</span>
+          </div>
+        </div>`;
+    }).join('');
+  }
+
+  // 4. PWA 安装与缓存控制逻辑
+  function setupPWA() {
+    const manifest = {
+      "short_name": "友谊药信通",
+      "name": "大连市友谊医院院内药品信息数智通",
+      "icons": [{ "src": "https://cdn-icons-png.flaticon.com/512/3022/3022226.png", "type": "image/png", "sizes": "512x512" }],
+      "start_url": "./index.html",
+      "background_color": "#f0f4f7",
+      "theme-color": "#028aa7",
+      "display": "standalone"
+    };
+    const blob = new Blob([JSON.stringify(manifest)], { type: 'application/json' });
+    document.head.insertAdjacentHTML('beforeend', `<link rel="manifest" href="${URL.createObjectURL(blob)}">`);
+
+    window.addEventListener('beforeinstallprompt', (e) => {
+      e.preventDefault();
+      deferredPrompt = e;
+      document.getElementById('pwaBanner').style.display = 'flex';
+    });
+
+    document.getElementById('pwaBtn').addEventListener('click', async () => {
+      if (deferredPrompt) {
+        deferredPrompt.prompt();
+        const { outcome } = await deferredPrompt.userChoice;
+        if (outcome === 'accepted') document.getElementById('pwaBanner').style.display = 'none';
+        deferredPrompt = null;
+      }
+    });
+
+    if ('serviceWorker' in navigator) {
+      // 升级为 yy-v5 缓存库名称，且只缓存第三方外部资源，绝不拦截本地 index.html 网页
+      const swCode = `
+        const CACHE_NAME = 'yy-v5';
+        self.addEventListener('install', e => { 
+          e.waitUntil(
+            caches.open(CACHE_NAME).then(c => c.addAll(['https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js']))
+          ); 
+        });
+        self.addEventListener('activate', e => {
+          e.waitUntil(
+            caches.keys().then(keys => Promise.all(keys.map(k => k !== CACHE_NAME ? caches.delete(k) : null)))
+          );
+        });
+        self.addEventListener('fetch', e => {
+          if (e.request.url.includes('xlsx') || e.request.url.includes('jsdelivr')) {
+            e.respondWith(caches.match(e.request).then(r => r || fetch(e.request)));
+          } else {
+            e.respondWith(fetch(e.request));
+          }
+        });
+      `;
+      navigator.serviceWorker.register(URL.createObjectURL(new Blob([swCode], { type: 'application/javascript' }))).catch(() => {});
+    }
+  }
+
+  window.addEventListener('DOMContentLoaded', () => { setupPWA(); loadExcelData(); });
+</script>
+</body>
+</html>

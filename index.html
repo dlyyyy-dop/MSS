@@ -19,8 +19,8 @@
     --primary-color: #028aa7;
     --primary-light: #e6f4f7;
     --accent-color: #ff9800;
-    --text-dark: #333333;
-    --text-muted: #666666;
+    --text-dark: #222222; /* 稍微加深文字颜色，提高对比度 */
+    --text-muted: #555555; /* 提高次要文字的可见度 */
     --bg-light: #f0f4f7;
     --card-bg: #ffffff;
     --border-color: #e1e6eb;
@@ -43,8 +43,8 @@
     z-index: 100;
     box-shadow: 0 2px 12px rgba(0,0,0,0.15);
   }
-  header h1 { font-size: 1.25rem; font-weight: 600; letter-spacing: 0.02em; }
-  header .sub { font-size: 0.72rem; opacity: 0.75; margin-top: 5px; }
+  header h1 { font-size: 1.35rem; font-weight: 600; letter-spacing: 0.02em; }
+  header .sub { font-size: 0.8rem; opacity: 0.85; margin-top: 5px; }
 
   .pwa-install-banner {
     background-color: var(--accent-color);
@@ -78,10 +78,10 @@
     margin-bottom: 16px;
   }
   .search-label {
-    font-size: 0.82rem;
-    color: var(--text-muted);
+    font-size: 0.95rem; /* 稍微放大提示 */
+    color: var(--text-dark);
     margin-bottom: 10px;
-    letter-spacing: 0.03em;
+    font-weight: bold;
   }
   .search-wrapper {
     display: flex;
@@ -93,7 +93,7 @@
     padding: 13px 16px;
     border: 2px solid var(--border-color);
     border-radius: 10px;
-    font-size: 1rem;
+    font-size: 1.1rem; /* 放大输入框字体 */
     outline: none;
     transition: border-color 0.2s;
     background: var(--bg-light);
@@ -102,12 +102,12 @@
   .search-input:disabled { opacity: 0.5; cursor: not-allowed; }
 
   .search-btn {
-    padding: 13px 22px;
+    padding: 13px 24px;
     background: var(--primary-color);
     color: white;
     border: none;
     border-radius: 10px;
-    font-size: 1rem;
+    font-size: 1.1rem; /* 放大按钮字体 */
     font-weight: 600;
     cursor: pointer;
     white-space: nowrap;
@@ -118,8 +118,8 @@
   .search-btn:disabled { opacity: 0.5; cursor: not-allowed; }
 
   .search-hint {
-    font-size: 0.78rem;
-    color: #aaa;
+    font-size: 0.85rem;
+    color: #666;
     margin-top: 9px;
     padding-left: 2px;
   }
@@ -129,17 +129,22 @@
     display: flex;
     justify-content: space-between;
     align-items: center;
-    font-size: 0.83rem;
-    color: var(--text-muted);
+    font-size: 1.05rem; /* 放大结果提示字体 */
+    font-weight: bold;
+    color: var(--primary-color);
     padding: 0 4px 14px 4px;
+    min-height: 30px;
   }
   .sync-btn {
-    background: none;
-    border: none;
+    background: #e6f4f7;
+    border: 1px solid var(--primary-color);
     color: var(--primary-color);
     font-weight: bold;
     cursor: pointer;
-    font-size: 0.83rem;
+    font-size: 0.95rem; /* 放大刷新按钮 */
+    padding: 6px 14px;
+    border-radius: 6px;
+    margin-left: auto; /* 确保无总数文本时靠右对齐 */
   }
 
   /* 空态提示 */
@@ -151,19 +156,19 @@
     border-radius: 14px;
     box-shadow: 0 2px 8px rgba(0,0,0,0.04);
   }
-  .welcome-icon { font-size: 2.8rem; margin-bottom: 14px; }
-  .welcome-title { font-size: 1rem; color: #555; font-weight: 600; margin-bottom: 6px; }
-  .welcome-sub { font-size: 0.83rem; color: #aaa; }
+  .welcome-icon { font-size: 3.5rem; margin-bottom: 14px; }
+  .welcome-title { font-size: 1.2rem; color: #333; font-weight: 600; margin-bottom: 8px; }
+  .welcome-sub { font-size: 0.95rem; color: #777; }
 
   /* 卡片列表 */
-  .result-list { display: flex; flex-direction: column; gap: 12px; }
+  .result-list { display: flex; flex-direction: column; gap: 14px; }
 
   .item-card {
     background: var(--card-bg);
     border-radius: 14px;
-    padding: 18px 16px;
-    box-shadow: 0 2px 10px rgba(0,0,0,0.05);
-    border-left: 5px solid var(--primary-color);
+    padding: 20px 18px;
+    box-shadow: 0 3px 12px rgba(0,0,0,0.08);
+    border-left: 6px solid var(--primary-color);
     transition: box-shadow 0.2s;
   }
   .item-card:active { box-shadow: 0 4px 16px rgba(0,0,0,0.1); }
@@ -172,13 +177,13 @@
     display: flex;
     justify-content: space-between;
     align-items: flex-start;
-    margin-bottom: 10px;
+    margin-bottom: 12px;
     gap: 10px;
   }
   .item-title {
-    font-size: 1.08rem;
-    font-weight: 700;
-    color: var(--text-dark);
+    font-size: 1.35rem; /* 大幅放大药品名称 */
+    font-weight: 800;
+    color: #000000;
     flex: 1;
     line-height: 1.4;
   }
@@ -191,55 +196,56 @@
   }
 
   .badge-stock {
-    padding: 5px 12px;
+    padding: 6px 16px; /* 增大标签尺寸 */
     border-radius: 20px;
-    font-size: 0.88rem;
-    font-weight: 700;
+    font-size: 1.05rem; /* 放大库存文字 */
+    font-weight: bold;
     letter-spacing: 0.04em;
   }
-  .badge-stock.has { background-color: var(--success-light); color: var(--success-color); }
-  .badge-stock.empty { background-color: var(--danger-light); color: var(--danger-color); }
+  .badge-stock.has { background-color: var(--success-color); color: white; } /* 提高对比度：绿底白字 */
+  .badge-stock.empty { background-color: var(--danger-color); color: white; } /* 提高对比度：红底白字 */
 
   .brand-tag {
     display: inline-block;
-    font-size: 0.78rem;
-    padding: 3px 9px;
+    font-size: 1.0rem; /* 放大商品名 */
+    padding: 4px 10px;
     border-radius: 5px;
     background-color: #fff3e0;
-    color: #e65100;
-    margin-bottom: 10px;
-    font-weight: 500;
+    color: #d84315;
+    margin-bottom: 12px;
+    font-weight: bold;
   }
 
   .item-divider {
     border: none;
-    border-top: 1px solid var(--border-color);
-    margin: 10px 0;
+    border-top: 1.5px solid var(--border-color);
+    margin: 12px 0;
   }
 
   .item-row {
-    font-size: 0.86rem;
-    color: var(--text-muted);
-    margin-top: 7px;
+    font-size: 1.15rem; /* 全面放大信息文本 */
+    color: var(--text-dark);
+    margin-top: 10px;
     display: flex;
     align-items: baseline;
-    line-height: 1.5;
+    line-height: 1.6; /* 加大行间距，防止文字挤在一起 */
   }
   .item-label {
-    min-width: 72px;
-    color: #b0b8c1;
-    font-size: 0.82rem;
+    min-width: 95px; /* 适当放宽标签宽度防止重叠 */
+    color: #666666; /* 加深标签颜色以利于辨认 */
+    font-size: 1.1rem;
     flex-shrink: 0;
   }
-  .item-value { color: #444444; flex: 1; }
+  .item-value { color: #111111; flex: 1; font-weight: 500; }
   .item-value.highlight {
     color: var(--primary-color);
-    font-weight: 700;
+    font-weight: bold;
+    font-size: 1.25rem; /* 特别放大库房名称 */
   }
   .item-value.price {
-    color: #b5450b;
-    font-weight: 700;
-    font-size: 0.95rem;
+    color: #d32f2f;
+    font-weight: bold;
+    font-size: 1.3rem; /* 放大价格显示 */
   }
 
   .loading-box, .empty-box {
@@ -306,12 +312,12 @@
   // 1. 数据异步同步与清洗
   async function loadExcelData() {
     const listContainer = document.getElementById('resultList');
-    listContainer.innerHTML = `<div class="loading-box"><div class="spinner"></div><p>正在建立数据通道…</p></div>`;
+    listContainer.innerHTML = `<div class="loading-box"><div class="spinner"></div><p style="font-size:1.1rem;">正在建立数据通道…</p></div>`;
     dataReady = false;
     document.getElementById('searchInput').disabled = true;
     document.getElementById('searchBtn').disabled = true;
     document.getElementById('searchHint').textContent = '正在同步药库数据，请稍候…';
-    document.getElementById('totalCount').textContent = '';
+    document.getElementById('totalCount').textContent = ''; // 隐藏处1：清空初始化总数提示
 
     try {
       const response = await fetch(`./${EXCEL_FILE_NAME}?t=${Date.now()}`);
@@ -360,8 +366,10 @@
       dataReady = true;
       document.getElementById('searchInput').disabled = false;
       document.getElementById('searchBtn').disabled = false;
-      document.getElementById('searchHint').textContent = `已同步 ${inventoryData.length} 条药品记录，输入关键词后点击查询`;
-      document.getElementById('totalCount').textContent = `共 ${inventoryData.length} 条药品记录`;
+      
+      // 隐藏处2：将带有总数的提示改为纯功能引导
+      document.getElementById('searchHint').textContent = `数据已同步成功，输入关键词后点击查询`;
+      document.getElementById('totalCount').textContent = ``; 
 
       // 数据就绪后显示默认欢迎态
       listContainer.innerHTML = `
@@ -379,8 +387,8 @@
     } catch (error) {
       listContainer.innerHTML = `
         <div class="empty-box" style="color: var(--danger-color);">
-          <p>❌ 数据读取错误</p>
-          <p style="font-size:0.82rem; margin-top:10px; color:#555;">
+          <p style="font-size:1.2rem; font-weight:bold;">❌ 数据读取错误</p>
+          <p style="font-size:1.0rem; margin-top:10px; color:#333;">
             请确认 <b>${EXCEL_FILE_NAME}</b> 与本页面位于同一目录，且文件未被损坏或锁定。
           </p>
         </div>`;
@@ -399,13 +407,14 @@
           <div class="welcome-title">请输入查询关键词</div>
           <div class="welcome-sub">支持药品名称 / 商品名模糊检索</div>
         </div>`;
-      document.getElementById('totalCount').textContent = `共 ${inventoryData.length} 条药品记录`;
+      document.getElementById('totalCount').textContent = ``; // 空白时不显示条数
       return;
     }
     const res = inventoryData.filter(i =>
       i.name.toLowerCase().includes(val) ||
       i.brandName.toLowerCase().includes(val)
     );
+    // 【保留】查询结果匹配数量提示，并做高亮处理
     document.getElementById('totalCount').textContent = `查询到 ${res.length} 条匹配记录`;
     renderList(res);
   }
@@ -416,16 +425,16 @@
     if (data.length === 0) {
       listContainer.innerHTML = `
         <div class="empty-box">
-          <div style="font-size:2.2rem;margin-bottom:12px;">📭</div>
-          <div style="font-weight:600;color:#555;margin-bottom:6px;">未查询到匹配药品</div>
-          <div style="font-size:0.82rem;color:#aaa;">请尝试其他名称或商品名</div>
+          <div style="font-size:3rem;margin-bottom:12px;">📭</div>
+          <div style="font-weight:bold;color:#222;font-size:1.2rem;margin-bottom:6px;">未查询到匹配药品</div>
+          <div style="font-size:1.0rem;color:#666;">请尝试其他名称或商品名</div>
         </div>`;
       return;
     }
 
     listContainer.innerHTML = data.map(item => {
       const hasStock = item.quantity > 0;
-      const stockLabel = hasStock ? '有' : '无';
+      const stockLabel = hasStock ? '有库房存货' : '暂无存货';
       const stockClass = hasStock ? 'has' : 'empty';
       const priceText  = (item.price != null && item.price !== '') ? `¥ ${Number(item.price).toFixed(2)}` : '-';
 
@@ -433,14 +442,14 @@
         <div class="item-card">
           <div class="item-header">
             <div class="item-title">${item.name}</div>
-            <div class="badges">
-              <div class="badge-stock ${stockClass}">${stockLabel}</div>
-            </div>
+          </div>
+          <div style="margin-bottom: 8px;">
+            <span class="badge-stock ${stockClass}">${stockLabel}</span>
           </div>
           ${item.brandName ? `<div><span class="brand-tag">商品名：${item.brandName}</span></div>` : ''}
           <hr class="item-divider">
           <div class="item-row">
-            <span class="item-label">规　格：</span>
+            <span class="item-label">规  格：</span>
             <span class="item-value">${item.spec || '-'}</span>
           </div>
           <div class="item-row">

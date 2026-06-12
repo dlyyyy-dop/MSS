@@ -253,6 +253,14 @@
     font-size: 1.3rem; 
   }
 
+  /* 底部免责/库存提示字样 */
+  .item-hint {
+    font-size: 0.85rem;
+    color: #888888;
+    margin-top: 12px;
+    text-align: right;
+  }
+
   .loading-box, .empty-box {
     text-align: center;
     padding: 48px 20px;
@@ -474,6 +482,8 @@
             <span class="item-label">所在药房：</span>
             <span class="item-value highlight">${item.room || '-'}</span>
           </div>
+          
+          <div class="item-hint">[药品库存以实际为准]</div>
         </div>`;
     }).join('');
   }

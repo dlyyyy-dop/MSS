@@ -1,0 +1,472 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="theme-color" content="#028aa7">
+
+<title>大连市友谊医院 - 库存数智通</title>
+<meta name="apple-mobile-web-app-title" content="友谊库存通">
+<meta name="application-name" content="友谊库存通">
+
+<script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
+
+<style>
+  :root {
+    --primary-color: #028aa7;
+    --primary-light: #e6f4f7;
+    --accent-color: #ff9800;
+    --text-dark: #333333;
+    --text-muted: #666666;
+    --bg-light: #f5f7fa;
+    --card-bg: #ffffff;
+    --border-color: #e1e6eb;
+  }
+
+  * {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+    -webkit-tap-highlight-color: transparent;
+  }
+
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+    background-color: var(--bg-light);
+    color: var(--text-dark);
+    line-height: 1.4;
+  }
+
+  /* 导航栏 */
+  header {
+    background: linear-gradient(135deg, var(--primary-color), #016b82);
+    color: white;
+    padding: 16px;
+    text-align: center;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+  }
+
+  header h1 {
+    font-size: 1.2rem;
+    font-weight: 600;
+    letter-spacing: 0.5px;
+  }
+
+  .env-badge {
+    display: inline-block;
+    font-size: 0.7rem;
+    background: rgba(255,255,255,0.2);
+    padding: 2px 8px;
+    border-radius: 10px;
+    margin-top: 4px;
+  }
+
+  .container {
+    max-width: 600px;
+    margin: 0 auto;
+    padding: 12px;
+  }
+
+  /* 搜索区样式 */
+  .search-box {
+    background: var(--card-bg);
+    padding: 14px;
+    border-radius: 12px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+    margin-bottom: 12px;
+  }
+
+  .search-wrapper {
+    position: relative;
+    display: flex;
+    align-items: center;
+  }
+
+  .search-input {
+    width: 100%;
+    padding: 12px 16px;
+    padding-right: 40px;
+    border: 2px solid var(--border-color);
+    border-radius: 8px;
+    font-size: 1rem;
+    outline: none;
+    transition: all 0.3s;
+  }
+
+  .search-input:focus {
+    border-color: var(--primary-color);
+    box-shadow: 0 0 0 3px var(--primary-light);
+  }
+
+  .clear-btn {
+    position: absolute;
+    right: 12px;
+    background: #ccc;
+    color: white;
+    border: none;
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    font-size: 0.8rem;
+    cursor: pointer;
+    display: none;
+    align-items: center;
+    justify-content: center;
+  }
+
+  /* 状态信息栏 */
+  .status-bar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 0.85rem;
+    color: var(--text-muted);
+    padding: 2px 4px 10px 4px;
+  }
+
+  .sync-btn {
+    background: none;
+    border: none;
+    color: var(--primary-color);
+    font-weight: bold;
+    cursor: pointer;
+    font-size: 0.85rem;
+  }
+
+  /* 结果卡片效果（深度还原第二张截图样式） */
+  .result-list {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  .item-card {
+    background: var(--card-bg);
+    border-radius: 12px;
+    padding: 14px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+    border-left: 5px solid var(--primary-color);
+    transition: transform 0.2s;
+  }
+
+  .item-card:active {
+    transform: scale(0.99);
+  }
+
+  .item-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-bottom: 6px;
+  }
+
+  .item-title {
+    font-size: 1.05rem;
+    font-weight: bold;
+    color: var(--text-dark);
+    flex: 1;
+    padding-right: 8px;
+  }
+
+  .item-stock-badge {
+    background-color: var(--primary-light);
+    color: var(--primary-color);
+    padding: 4px 10px;
+    border-radius: 20px;
+    font-size: 0.9rem;
+    font-weight: 700;
+    white-space: nowrap;
+  }
+
+  .item-stock-badge.empty {
+    background-color: #ffebee;
+    color: #c62828;
+  }
+
+  .item-row {
+    font-size: 0.85rem;
+    color: var(--text-muted);
+    margin-top: 4px;
+    display: flex;
+  }
+
+  .item-label {
+    min-width: 65px;
+    color: #999999;
+  }
+
+  .item-value {
+    color: #444444;
+    flex: 1;
+  }
+
+  .tag {
+    display: inline-block;
+    font-size: 0.75rem;
+    padding: 1px 6px;
+    border-radius: 4px;
+    margin-right: 4px;
+    background-color: #f0f2f5;
+  }
+  
+  .tag-brand {
+    background-color: #fff3e0;
+    color: #e65100;
+  }
+
+  .loading-box, .empty-box {
+    text-align: center;
+    padding: 40px 20px;
+    color: var(--text-muted);
+    background: var(--card-bg);
+    border-radius: 12px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+  }
+
+  .spinner {
+    width: 30px;
+    height: 30px;
+    border: 3px solid var(--border-color);
+    border-top-color: var(--primary-color);
+    border-radius: 50%;
+    margin: 0 auto 12px auto;
+    animation: spin 1s linear infinite;
+  }
+
+  @keyframes spin {
+    to { transform: rotate(360deg); }
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <h1>大连市友谊医院 - 库存数智通</h1>
+  <div class="env-badge" id="envBadge">正在检测数据源...</div>
+</header>
+
+<div class="container">
+  <div class="search-box">
+    <div class="search-wrapper">
+      <input type="text" id="searchInput" class="search-input" placeholder="输入药品/物资名称、商品名、厂家检索..." disabled>
+      <button id="clearBtn" class="clear-btn">&times;</button>
+    </div>
+  </div>
+
+  <div class="status-bar">
+    <span id="totalCount">正在读取实时文件...</span>
+    <button class="sync-btn" id="syncBtn" onclick="loadExcelData()">🔄 实时刷新</button>
+  </div>
+
+  <div id="resultList" class="result-list">
+    <div class="loading-box">
+      <div class="spinner"></div>
+      <p id="loadingText">正在从当前根目录下读取最新数据源 (stock.xlsx)...</p>
+    </div>
+  </div>
+</div>
+
+<script>
+  // 核心改动：固定统一的文件名，防止后期维护由于日期变化经常改动代码
+  const EXCEL_FILE_NAME = 'stock.xlsx';
+  
+  let inventoryData = []; 
+
+  // 1. 深度复刻环境智能识别
+  function getFetchUrl() {
+    const hostname = window.location.hostname;
+    const timeStamp = new Date().getTime(); // 阻止浏览器硬缓存，保证每次刷新拿到的都是最新覆盖的Excel
+    
+    if (hostname.includes('github.io')) {
+      document.getElementById('envBadge').innerText = '🚀 运行环境: GitHub Pages 实时源';
+    } else {
+      document.getElementById('envBadge').innerText = '🏥 运行环境: 大连市友谊医院内网';
+    }
+    return `./${EXCEL_FILE_NAME}?t=${timeStamp}`;
+  }
+
+  // 2. 高效异步多端下载及结构化清洗
+  async function loadExcelData() {
+    const showLoading = (text) => {
+      document.getElementById('resultList').innerHTML = `
+        <div class="loading-box"><div class="spinner"></div><p>${text}</p></div>
+      `;
+    };
+    
+    showLoading("正在连接数据库存流文件...");
+    const fileUrl = getFetchUrl();
+
+    try {
+      const response = await fetch(fileUrl);
+      if (!response.ok) throw new Error(`未读取到 ${EXCEL_FILE_NAME} 文件，请确认已上传到服务器相同根目录下。`);
+      
+      showLoading("同步成功，正在进行多线程数据解析...");
+      const arrayBuffer = await response.arrayBuffer();
+      const data = new Uint8Array(arrayBuffer);
+      const workbook = XLSX.read(data, { type: 'array' });
+      
+      const firstSheetName = workbook.SheetNames[0];
+      const worksheet = workbook.Sheets[firstSheetName];
+      
+      // 数据转换为行数组
+      const rawJson = XLSX.utils.sheet_to_json(worksheet, { header: 1 });
+      
+      if(rawJson.length < 2) {
+        throw new Error("表格内容为空或表头结构错误");
+      }
+
+      // 智能搜寻核心表头锚定点（跳过第一行的标题信息）
+      let headerIndex = 0;
+      for (let i = 0; i < rawJson.length; i++) {
+        if (rawJson[i] && (rawJson[i].includes('名称') || rawJson[i].includes('编码'))) {
+          headerIndex = i;
+          break;
+        }
+      }
+
+      const headers = rawJson[headerIndex];
+      inventoryData = [];
+
+      // 高效映射字段到UI界面
+      for (let j = headerIndex + 1; j < rawJson.length; j++) {
+        const row = rawJson[j];
+        if (!row || row.length === 0 || !row[headers.indexOf('名称')]) continue; 
+
+        inventoryData.push({
+          code: row[headers.indexOf('编码')] || '',
+          room: row[headers.indexOf('库房')] || '',
+          location: row[headers.indexOf('库房货位')] || '',
+          name: row[headers.indexOf('名称')] || '',
+          brandName: row[headers.indexOf('商品名')] || '',
+          spec: row[headers.indexOf('规格')] || '',
+          factory: row[headers.indexOf('产地')] || '',
+          quantity: parseInt(row[headers.indexOf('数量')]) || 0
+        });
+      }
+
+      document.getElementById('totalCount').innerText = `已载入 ${inventoryData.length} 个项目最新库存`;
+      document.getElementById('searchInput').disabled = false;
+      document.getElementById('searchInput').placeholder = "🔍 智能搜索：输入商品名、厂家或库房";
+      
+      renderList(inventoryData);
+
+    } catch (error) {
+      console.error(error);
+      document.getElementById('resultList').innerHTML = `
+        <div class="empty-box" style="color: #c62828;">
+          <p>⚠️ 实时加载失败</p>
+          <p style="font-size:0.85rem; margin-top:8px; color:#666;">
+             请确保您已将最新 Excel 数据表格更名为 <b>${EXCEL_FILE_NAME}</b> 并存放到 index.html 网页相同的文件夹下。
+          </p>
+          <p style="font-size:0.7rem; color:#999; margin-top:6px;">错误调试：${error.message}</p>
+        </div>
+      `;
+    }
+  }
+
+  // 3. 动态视图构建渲染
+  function renderList(data) {
+    const listContainer = document.getElementById('resultList');
+    if (data.length === 0) {
+      listContainer.innerHTML = `<div class="empty-box">📭 无相关检索匹配记录</div>`;
+      return;
+    }
+
+    listContainer.innerHTML = data.map(item => `
+      <div class="item-card">
+        <div class="item-header">
+          <div class="item-title">${item.name}</div>
+          <div class="item-stock-badge ${item.quantity <= 0 ? 'empty' : ''}">
+            库存: ${item.quantity}
+          </div>
+        </div>
+        ${item.brandName ? `<div style="margin-bottom: 6px;"><span class="tag tag-brand">商品名: ${item.brandName}</span></div>` : ''}
+        <div class="item-row">
+          <span class="item-label">规格参数：</span>
+          <span class="item-value">${item.spec || '-'}</span>
+        </div>
+        <div class="item-row">
+          <span class="item-label">生产厂家：</span>
+          <span class="item-value">${item.factory || '-'}</span>
+        </div>
+        <div class="item-row">
+          <span class="item-label">所属库房：</span>
+          <span class="item-value" style="color: var(--primary-color); font-weight:600;">
+            ${item.room} ${item.location ? ` - [${item.location}]` : ''}
+          </span>
+        </div>
+      </div>
+    `).join('');
+  }
+
+  // 4. 多字段毫秒级模糊过滤器
+  const searchInput = document.getElementById('searchInput');
+  const clearBtn = document.getElementById('clearBtn');
+
+  searchInput.addEventListener('input', (e) => {
+    const keyword = e.target.value.trim().toLowerCase();
+    clearBtn.style.display = keyword !== '' ? 'flex' : 'none';
+
+    // 全功能融合查询
+    const filtered = inventoryData.filter(item => {
+      return item.name.toLowerCase().includes(keyword) || 
+             item.brandName.toLowerCase().includes(keyword) || 
+             item.factory.toLowerCase().includes(keyword) ||
+             item.room.toLowerCase().includes(keyword);
+    });
+
+    document.getElementById('totalCount').innerText = `已筛选出 ${filtered.length} 条记录`;
+    renderList(filtered);
+  });
+
+  clearBtn.addEventListener('click', () => {
+    searchInput.value = '';
+    clearBtn.style.display = 'none';
+    searchInput.focus();
+    document.getElementById('totalCount').innerText = `已载入 ${inventoryData.length} 个项目最新库存`;
+    renderList(inventoryData);
+  });
+
+  // 5. 轻量化全自签 PWA Manifest 分发与沙盒 Service Worker 离线架构
+  function initPWA() {
+    const manifest = {
+      "short_name": "友谊库存通",
+      "name": "大连市友谊医院库存数智通",
+      "icons": [{ "src": "https://cdn-icons-png.flaticon.com/512/3022/3022226.png", "type": "image/png", "sizes": "512x512" }],
+      "start_url": "./index.html",
+      "background_color": "#f5f7fa",
+      "theme-color": "#028aa7",
+      "display": "standalone"
+    };
+    const blob = new Blob([JSON.stringify(manifest)], {type: 'application/json'});
+    const manifestURL = URL.createObjectURL(blob);
+    document.querySelector('link[rel=manifest]') || document.head.insertAdjacentHTML('beforeend', `<link rel="manifest" href="${manifestURL}">`);
+
+    if ('serviceWorker' in navigator) {
+      const swCode = `
+        const CACHE_NAME = 'yy-stock-pwa-v1';
+        self.addEventListener('install', e => { e.waitUntil(caches.open(CACHE_NAME).then(cache => cache.addAll(['./', './index.html']))); });
+        self.addEventListener('fetch', e => {
+          // 对 Excel 数据流一律采取旁路实时网络请求，避免数据滞后；对UI采用本地秒开缓存
+          if (e.request.url.includes('.xlsx') || e.request.url.includes('.xls')) { e.respondWith(fetch(e.request)); } 
+          else { e.respondWith(caches.match(e.request).then(res => res || fetch(e.request))); }
+        });
+      `;
+      const swUrl = URL.createObjectURL(new Blob([swCode], {type: 'application/javascript'}));
+      navigator.serviceWorker.register(swUrl).catch(() => {});
+    }
+  }
+
+  window.addEventListener('DOMContentLoaded', () => {
+    initPWA();
+    loadExcelData();
+  });
+</script>
+</body>
+</html>
